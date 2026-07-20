@@ -1,86 +1,94 @@
 {{--
-    Reusable staff dropdown dengan opsi "Lainnya (Ketik Manual)" dan multi-select.
+    Staff selector: checkbox list + opsi "Lainnya (Ketik Manual)"
     Props:
-        $fieldName    — nama field, e.g. 'counselor_id'
-        $manualField  — nama field manual, e.g. 'counselor_name'
-        $label        — label teks, e.g. 'Guru BK / Konselor'
+        $fieldName    — e.g. 'counselor_id'   (tanpa [])
+        $manualField  — e.g. 'counselor_name'
+        $label        — teks label
         $users        — collection User
-        $currentId    — nilai id saat ini (untuk edit)
-        $currentName  — nilai name manual saat ini (untuk edit)
-        $currentExtras— array extra names saat ini (untuk edit, multi)
-        $multi        — bool, true jika multi-select (default false)
-        $manualId     — HTML id untuk input manual (default: fieldName + 'Manual')
+        $currentId    — id user terpilih saat ini (edit)
+        $currentName  — nama manual saat ini (edit)
+        $currentExtras— array extra names (edit)
+        $multi        — bool, true = checkbox multi, false = radio single
 --}}
 @php
-    $multi      = $multi ?? false;
-    $manualId   = $manualId ?? str_replace(['[',']'], '', $fieldName) . 'Manual';
-    $selectId   = str_replace(['[',']'], '', $fieldName) . 'Sel';
-    $currentId  = $currentId ?? null;
-    $currentName= $currentName ?? null;
-    $currentExtras = $currentExtras ?? [];
+    $multi       = $multi ?? false;
+    $currentId   = $currentId ?? null;
+    $currentName = $currentName ?? null;
+    $currentExtras = !empty($currentExtras) ? (array)$currentExtras : [];
 
-    // Determine if "other" should be pre-selected
-    $isOther = $currentName && !$currentId;
+    // Old input
+    $oldIds   = old($fieldName, $currentId ? [$currentId] : []);
+    if (!is_array($oldIds)) $oldIds = [$oldIds];
+    $oldManual = old($manualField, $currentName ?? '');
+    $showManual = in_array('other', $oldIds) || (!empty($currentName) && !$currentId);
+    if ($showManual && !in_array('other', $oldIds)) $oldIds[] = 'other';
 
-    if ($multi) {
-        // Build selected values for multi
-        $selectedIds = old(str_replace('[]','', $fieldName), []);
-        if (empty($selectedIds) && $currentId) $selectedIds = [$currentId];
-        if (empty($selectedIds) && $isOther)   $selectedIds = ['other'];
-    } else {
-        $selectedVal = old(str_replace('[]','', $fieldName), $isOther ? 'other' : ($currentId ?? ''));
-    }
+    $uid = 'staff_' . str_replace([' ','/'], '_', $fieldName);
 @endphp
 
-<label class="form-label fw-semibold">
+<label class="form-label fw-semibold mb-2">
     {{ $label }}
     @if($multi)
-    <span class="badge bg-info text-dark ms-1" style="font-size:.65rem;vertical-align:middle">Bisa lebih dari 1</span>
+        <span class="text-muted fw-normal ms-1" style="font-size:.72rem">(pilih satu atau lebih)</span>
     @endif
 </label>
 
-@if($multi)
-<select name="{{ $fieldName }}" id="{{ $selectId }}" class="form-select"
-    multiple size="4"
-    onchange="staffToggleManualMulti(this,'{{ $manualId }}')">
-    @foreach($users as $u)
-    <option value="{{ $u->id }}"
-        {{ in_array($u->id, (array)$selectedIds) ? 'selected' : '' }}>
-        {{ $u->name }}
-    </option>
-    @endforeach
-    <option value="other" {{ in_array('other', (array)$selectedIds) ? 'selected' : '' }}>
-        ✏️ Lainnya (Ketik Manual)
-    </option>
-</select>
-<div class="form-text" style="font-size:.7rem">Ctrl+klik untuk pilih lebih dari satu</div>
+<div class="border rounded-3 p-3" style="background:#fafbfc" id="{{ $uid }}_wrap">
 
-{{-- Show extra names as chips if editing --}}
-@if(!empty($currentExtras))
-<div class="mt-1 d-flex flex-wrap gap-1">
-    @foreach($currentExtras as $e)
-    <span class="badge bg-light text-dark border" style="font-size:.75rem">{{ $e }}</span>
+    {{-- Daftar user sebagai checkbox/radio --}}
+    @foreach($users as $u)
+    <div class="form-check mb-1">
+        <input class="form-check-input" type="{{ $multi ? 'checkbox' : 'radio' }}"
+            name="{{ $fieldName }}{{ $multi ? '[]' : '' }}"
+            id="{{ $uid }}_{{ $u->id }}"
+            value="{{ $u->id }}"
+            {{ in_array($u->id, array_map('strval', $oldIds)) ? 'checked' : '' }}
+            onchange="{{ $multi ? "staffCheckOther('{$uid}')" : "staffRadioOther('{$uid}')" }}">
+        <label class="form-check-label" for="{{ $uid }}_{{ $u->id }}">
+            {{ $u->name }}
+            @if($u->jabatan)
+                <small class="text-muted ms-1">— {{ $u->jabatan }}</small>
+            @endif
+        </label>
+    </div>
     @endforeach
+
+    {{-- Opsi Lainnya --}}
+    <div class="form-check mb-0 mt-2 pt-2 border-top">
+        <input class="form-check-input" type="{{ $multi ? 'checkbox' : 'radio' }}"
+            name="{{ $fieldName }}{{ $multi ? '[]' : '' }}"
+            id="{{ $uid }}_other"
+            value="other"
+            {{ $showManual ? 'checked' : '' }}
+            onchange="{{ $multi ? "staffCheckOther('{$uid}')" : "staffRadioOther('{$uid}')" }}">
+        <label class="form-check-label fw-semibold text-primary" for="{{ $uid }}_other">
+            <i class="bi bi-pencil-fill me-1" style="font-size:.75rem"></i>Lainnya (Ketik Manual)
+        </label>
+    </div>
+
+    {{-- Input manual — muncul saat "Lainnya" dipilih --}}
+    <div id="{{ $uid }}_manual" class="{{ $showManual ? 'mt-2' : 'd-none mt-2' }}">
+        <input type="text" name="{{ $manualField }}"
+            class="form-control form-control-sm"
+            placeholder="Ketik nama lengkap..."
+            value="{{ $oldManual }}">
+        <div class="form-text" style="font-size:.68rem">
+            <i class="bi bi-info-circle me-1"></i>Nama ini akan dicatat jika tidak ada di daftar akun
+        </div>
+    </div>
+
+    {{-- Tampilkan extra names yang sudah tersimpan (saat edit) --}}
+    @if(!empty($currentExtras))
+    <div class="mt-2 pt-2 border-top">
+        <small class="text-muted d-block mb-1">Staf tambahan tersimpan:</small>
+        <div class="d-flex flex-wrap gap-1">
+            @foreach($currentExtras as $e)
+            <span class="badge bg-light text-dark border" style="font-size:.75rem">
+                <i class="bi bi-person-fill me-1 text-muted"></i>{{ $e }}
+            </span>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
 </div>
-@endif
-
-@else
-<select name="{{ $fieldName }}" id="{{ $selectId }}" class="form-select"
-    onchange="staffToggleManual(this,'{{ $manualId }}')">
-    <option value="">-- Pilih --</option>
-    @foreach($users as $u)
-    <option value="{{ $u->id }}"
-        {{ $selectedVal == $u->id ? 'selected' : '' }}>
-        {{ $u->name }}
-    </option>
-    @endforeach
-    <option value="other" {{ $selectedVal === 'other' ? 'selected' : '' }}>
-        ✏️ Lainnya (Ketik Manual)
-    </option>
-</select>
-@endif
-
-<input type="text" name="{{ $manualField }}" id="{{ $manualId }}"
-    class="form-control mt-2 {{ ($isOther || in_array('other', old(str_replace('[]','', $fieldName), []))) ? '' : 'd-none' }}"
-    placeholder="Ketik nama..."
-    value="{{ old($manualField, $currentName) }}">

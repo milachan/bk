@@ -241,7 +241,7 @@
     <ul class="sidebar-nav nav flex-column py-2">
         <!-- Dashboard -->
         <li class="nav-item">
-            <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" onclick="closeSidebarOnMobile()">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
         </li>
@@ -428,6 +428,25 @@
         }
     }
 
+    // Tutup sidebar di mobile (dipanggil saat klik nav link)
+    function closeSidebarOnMobile() {
+        if (window.innerWidth < 992) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('show');
+            overlay.style.display = 'none';
+        }
+    }
+
+    // Auto-close sidebar saat klik nav link di mobile
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('#sidebar .nav-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+                closeSidebarOnMobile();
+            });
+        });
+    });
+
     // Theme toggle
     function toggleTheme() {
         const html = document.documentElement;
@@ -449,29 +468,51 @@
 
 {{-- Global staff dropdown helpers --}}
 <script>
+// Single select (radio) — toggle manual input
+function staffRadioOther(uid) {
+    const otherRadio = document.getElementById(uid + '_other');
+    const manualDiv  = document.getElementById(uid + '_manual');
+    if (!manualDiv) return;
+    if (otherRadio && otherRadio.checked) {
+        manualDiv.classList.remove('d-none');
+        manualDiv.querySelector('input[type="text"]')?.focus();
+    } else {
+        manualDiv.classList.add('d-none');
+    }
+}
+
+// Multi select (checkbox) — toggle manual input
+function staffCheckOther(uid) {
+    const otherCheck = document.getElementById(uid + '_other');
+    const manualDiv  = document.getElementById(uid + '_manual');
+    if (!manualDiv) return;
+    if (otherCheck && otherCheck.checked) {
+        manualDiv.classList.remove('d-none');
+        manualDiv.querySelector('input[type="text"]')?.focus();
+    } else {
+        manualDiv.classList.add('d-none');
+        const inp = manualDiv.querySelector('input[type="text"]');
+        if (inp) inp.value = '';
+    }
+}
+
+// Backward compat (dipakai di quick-entry)
 function staffToggleManual(sel, manualId) {
     const el = document.getElementById(manualId);
     if (!el) return;
-    if (sel.value === 'other') {
-        el.classList.remove('d-none');
-        el.focus();
-    } else {
-        el.classList.add('d-none');
-        el.value = '';
-    }
+    if (sel.value === 'other') { el.classList.remove('d-none'); el.focus(); }
+    else { el.classList.add('d-none'); el.value = ''; }
 }
 function staffToggleManualMulti(sel, manualId) {
     const el = document.getElementById(manualId);
     if (!el) return;
     const vals = Array.from(sel.selectedOptions).map(o => o.value);
-    if (vals.includes('other')) {
-        el.classList.remove('d-none');
-        el.focus();
-    } else {
-        el.classList.add('d-none');
-        el.value = '';
-    }
+    if (vals.includes('other')) { el.classList.remove('d-none'); el.focus(); }
+    else { el.classList.add('d-none'); el.value = ''; }
 }
+// toggleManual alias (dipakai di late-records)
+function toggleManual(sel, manualId) { staffToggleManual(sel, manualId); }
+function toggleManualMulti(sel, manualId) { staffToggleManualMulti(sel, manualId); }
 </script>
 
 @stack('scripts')

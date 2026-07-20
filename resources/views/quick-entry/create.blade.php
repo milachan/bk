@@ -190,17 +190,30 @@
         </div>
         <div class="col-12 col-md-3">
             <label class="form-label form-label-sm fw-semibold mb-1">Dicatat Oleh</label>
-            <select name="officer_id" id="officerSel" class="form-select form-select-sm"
-                onchange="toggleManual(this,'officerManual')">
-                <option value="">-- Pilih --</option>
+            <div class="border rounded-3 p-2" style="background:#fafbfc">
                 @foreach($officers as $u)
-                <option value="{{ $u->id }}" {{ old('officer_id', auth()->id()) == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" name="officer_id"
+                        id="lateOfficer_{{ $u->id }}" value="{{ $u->id }}"
+                        {{ old('officer_id', auth()->id()) == $u->id ? 'checked' : '' }}
+                        onchange="staffRadioOther('lateOfficer')">
+                    <label class="form-check-label small" for="lateOfficer_{{ $u->id }}">{{ $u->name }}</label>
+                </div>
                 @endforeach
-                <option value="other" {{ old('officer_id')==='other' ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-            </select>
-            <input type="text" name="officer_name" id="officerManual"
-                class="form-control form-control-sm mt-1 {{ old('officer_id')==='other' ? '' : 'd-none' }}"
-                placeholder="Nama pencatat..." value="{{ old('officer_name') }}">
+                <div class="form-check mb-0 mt-1 pt-1 border-top">
+                    <input class="form-check-input" type="radio" name="officer_id"
+                        id="lateOfficer_other" value="other"
+                        {{ old('officer_id')==='other' ? 'checked':'' }}
+                        onchange="staffRadioOther('lateOfficer')">
+                    <label class="form-check-label small fw-semibold text-primary" for="lateOfficer_other">
+                        <i class="bi bi-pencil-fill me-1" style="font-size:.65rem"></i>Lainnya
+                    </label>
+                </div>
+                <div id="lateOfficer_manual" class="{{ old('officer_id')==='other' ? 'mt-1' : 'd-none mt-1' }}">
+                    <input type="text" name="officer_name" class="form-control form-control-sm"
+                        placeholder="Ketik nama..." value="{{ old('officer_name') }}">
+                </div>
+            </div>
         </div>
         <div class="col-12 col-md-6">
             <label class="form-label form-label-sm fw-semibold mb-1">Alasan</label>
@@ -250,17 +263,30 @@
         </div>
         <div class="col-12 col-md-3">
             <label class="form-label form-label-sm fw-semibold mb-1">Pelapor</label>
-            <select name="reporter_id" id="reporterSel" class="form-select form-select-sm"
-                onchange="toggleManual(this,'reporterManual')">
-                <option value="">-- Pilih --</option>
+            <div class="border rounded-3 p-2" style="background:#fafbfc">
                 @foreach($officers as $u)
-                <option value="{{ $u->id }}" {{ old('reporter_id', auth()->id()) == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" name="reporter_id"
+                        id="vioReporter_{{ $u->id }}" value="{{ $u->id }}"
+                        {{ old('reporter_id', auth()->id()) == $u->id ? 'checked' : '' }}
+                        onchange="staffRadioOther('vioReporter')">
+                    <label class="form-check-label small" for="vioReporter_{{ $u->id }}">{{ $u->name }}</label>
+                </div>
                 @endforeach
-                <option value="other" {{ old('reporter_id')==='other' ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-            </select>
-            <input type="text" name="reporter_name" id="reporterManual"
-                class="form-control form-control-sm mt-1 {{ old('reporter_id')==='other' ? '' : 'd-none' }}"
-                placeholder="Nama pelapor..." value="{{ old('reporter_name') }}">
+                <div class="form-check mb-0 mt-1 pt-1 border-top">
+                    <input class="form-check-input" type="radio" name="reporter_id"
+                        id="vioReporter_other" value="other"
+                        {{ old('reporter_id')==='other' ? 'checked':'' }}
+                        onchange="staffRadioOther('vioReporter')">
+                    <label class="form-check-label small fw-semibold text-primary" for="vioReporter_other">
+                        <i class="bi bi-pencil-fill me-1" style="font-size:.65rem"></i>Lainnya
+                    </label>
+                </div>
+                <div id="vioReporter_manual" class="{{ old('reporter_id')==='other' ? 'mt-1' : 'd-none mt-1' }}">
+                    <input type="text" name="reporter_name" class="form-control form-control-sm"
+                        placeholder="Ketik nama..." value="{{ old('reporter_name') }}">
+                </div>
+            </div>
         </div>
 
         {{-- Pelanggaran lainnya --}}
@@ -323,17 +349,30 @@
                 Guru BK
                 <span class="badge bg-info text-dark ms-1" style="font-size:.6rem">Bisa lebih dari 1</span>
             </label>
-            <select name="counselor_id[]" id="counselorSel" class="form-select form-select-sm" multiple size="4"
-                onchange="toggleManualMulti(this,'counselorManual')">
+            <div class="border rounded-3 p-2" style="background:#fafbfc">
                 @foreach($counselors as $u)
-                <option value="{{ $u->id }}" {{ collect(old('counselor_id',[])) ->contains($u->id) ? 'selected' : '' }}>{{ $u->name }}</option>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" name="counselor_id[]"
+                        id="couCounselor_{{ $u->id }}" value="{{ $u->id }}"
+                        {{ in_array($u->id, (array)old('counselor_id', [auth()->id()])) ? 'checked' : '' }}
+                        onchange="staffCheckOther('couCounselor')">
+                    <label class="form-check-label small" for="couCounselor_{{ $u->id }}">{{ $u->name }}</label>
+                </div>
                 @endforeach
-                <option value="other" {{ in_array('other', old('counselor_id',[])) ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-            </select>
-            <div class="form-text" style="font-size:.68rem">Ctrl+klik untuk pilih lebih dari satu</div>
-            <input type="text" name="counselor_name" id="counselorManual"
-                class="form-control form-control-sm mt-1 {{ in_array('other', old('counselor_id',[])) ? '' : 'd-none' }}"
-                placeholder="Nama guru lainnya..." value="{{ old('counselor_name') }}">
+                <div class="form-check mb-0 mt-1 pt-1 border-top">
+                    <input class="form-check-input" type="checkbox" name="counselor_id[]"
+                        id="couCounselor_other" value="other"
+                        {{ in_array('other', (array)old('counselor_id',[])) ? 'checked':'' }}
+                        onchange="staffCheckOther('couCounselor')">
+                    <label class="form-check-label small fw-semibold text-primary" for="couCounselor_other">
+                        <i class="bi bi-pencil-fill me-1" style="font-size:.65rem"></i>Lainnya
+                    </label>
+                </div>
+                <div id="couCounselor_manual" class="{{ in_array('other',(array)old('counselor_id',[])) ? 'mt-1' : 'd-none mt-1' }}">
+                    <input type="text" name="counselor_name" class="form-control form-control-sm"
+                        placeholder="Ketik nama..." value="{{ old('counselor_name') }}">
+                </div>
+            </div>
         </div>
         <div class="col-12">
             <label class="form-label form-label-sm fw-semibold mb-1">Masalah / Topik <span class="text-danger">*</span></label>
@@ -373,17 +412,30 @@
                 Penangani
                 <span class="badge bg-info text-dark ms-1" style="font-size:.6rem">Bisa lebih dari 1</span>
             </label>
-            <select name="handler_id[]" id="handlerSel" class="form-select form-select-sm" multiple size="4"
-                onchange="toggleManualMulti(this,'handlerManual')">
+            <div class="border rounded-3 p-2" style="background:#fafbfc">
                 @foreach($counselors as $u)
-                <option value="{{ $u->id }}" {{ collect(old('handler_id',[])) ->contains($u->id) ? 'selected' : '' }}>{{ $u->name }}</option>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" name="handler_id[]"
+                        id="pmHandler_{{ $u->id }}" value="{{ $u->id }}"
+                        {{ in_array($u->id, (array)old('handler_id', [auth()->id()])) ? 'checked' : '' }}
+                        onchange="staffCheckOther('pmHandler')">
+                    <label class="form-check-label small" for="pmHandler_{{ $u->id }}">{{ $u->name }}</label>
+                </div>
                 @endforeach
-                <option value="other" {{ in_array('other', old('handler_id',[])) ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-            </select>
-            <div class="form-text" style="font-size:.68rem">Ctrl+klik untuk pilih lebih dari satu</div>
-            <input type="text" name="handler_name" id="handlerManual"
-                class="form-control form-control-sm mt-1 {{ in_array('other', old('handler_id',[])) ? '' : 'd-none' }}"
-                placeholder="Nama penangani lainnya..." value="{{ old('handler_name') }}">
+                <div class="form-check mb-0 mt-1 pt-1 border-top">
+                    <input class="form-check-input" type="checkbox" name="handler_id[]"
+                        id="pmHandler_other" value="other"
+                        {{ in_array('other', (array)old('handler_id',[])) ? 'checked':'' }}
+                        onchange="staffCheckOther('pmHandler')">
+                    <label class="form-check-label small fw-semibold text-primary" for="pmHandler_other">
+                        <i class="bi bi-pencil-fill me-1" style="font-size:.65rem"></i>Lainnya
+                    </label>
+                </div>
+                <div id="pmHandler_manual" class="{{ in_array('other',(array)old('handler_id',[])) ? 'mt-1' : 'd-none mt-1' }}">
+                    <input type="text" name="handler_name" class="form-control form-control-sm"
+                        placeholder="Ketik nama..." value="{{ old('handler_name') }}">
+                </div>
+            </div>
         </div>
         <div class="col-6 col-md-3">
             <label class="form-label form-label-sm fw-semibold mb-1">Orang Tua Hadir? <span class="text-danger">*</span></label>
@@ -430,17 +482,30 @@
                 Petugas
                 <span class="badge bg-info text-dark ms-1" style="font-size:.6rem">Bisa lebih dari 1</span>
             </label>
-            <select name="visitor_id[]" id="visitorSel" class="form-select form-select-sm" multiple size="4"
-                onchange="toggleManualMulti(this,'visitorManual')">
+            <div class="border rounded-3 p-2" style="background:#fafbfc">
                 @foreach($counselors as $u)
-                <option value="{{ $u->id }}" {{ collect(old('visitor_id',[])) ->contains($u->id) ? 'selected' : '' }}>{{ $u->name }}</option>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" name="visitor_id[]"
+                        id="hvVisitor_{{ $u->id }}" value="{{ $u->id }}"
+                        {{ in_array($u->id, (array)old('visitor_id', [auth()->id()])) ? 'checked' : '' }}
+                        onchange="staffCheckOther('hvVisitor')">
+                    <label class="form-check-label small" for="hvVisitor_{{ $u->id }}">{{ $u->name }}</label>
+                </div>
                 @endforeach
-                <option value="other" {{ in_array('other', old('visitor_id',[])) ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-            </select>
-            <div class="form-text" style="font-size:.68rem">Ctrl+klik untuk pilih lebih dari satu</div>
-            <input type="text" name="visitor_name" id="visitorManual"
-                class="form-control form-control-sm mt-1 {{ in_array('other', old('visitor_id',[])) ? '' : 'd-none' }}"
-                placeholder="Nama petugas lainnya..." value="{{ old('visitor_name') }}">
+                <div class="form-check mb-0 mt-1 pt-1 border-top">
+                    <input class="form-check-input" type="checkbox" name="visitor_id[]"
+                        id="hvVisitor_other" value="other"
+                        {{ in_array('other', (array)old('visitor_id',[])) ? 'checked':'' }}
+                        onchange="staffCheckOther('hvVisitor')">
+                    <label class="form-check-label small fw-semibold text-primary" for="hvVisitor_other">
+                        <i class="bi bi-pencil-fill me-1" style="font-size:.65rem"></i>Lainnya
+                    </label>
+                </div>
+                <div id="hvVisitor_manual" class="{{ in_array('other',(array)old('visitor_id',[])) ? 'mt-1' : 'd-none mt-1' }}">
+                    <input type="text" name="visitor_name" class="form-control form-control-sm"
+                        placeholder="Ketik nama..." value="{{ old('visitor_name') }}">
+                </div>
+            </div>
         </div>
         <div class="col-12">
             <label class="form-label form-label-sm fw-semibold mb-1">Alamat <span class="text-danger">*</span></label>
