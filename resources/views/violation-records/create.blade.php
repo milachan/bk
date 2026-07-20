@@ -104,16 +104,16 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Pelapor</label>
-                <select name="reporter_id" class="form-select @error('reporter_id') is-invalid @enderror">
-                    <option value="">Pilih Pelapor...</option>
-                    @foreach($reporters as $rp)
-                    <option value="{{ $rp->id }}" {{ old('reporter_id', auth()->id()) == $rp->id ? 'selected' : '' }}>
-                        {{ $rp->name }}
-                    </option>
-                    @endforeach
-                </select>
-                @error('reporter_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                @include('partials.staff-select', [
+                    'fieldName'   => 'reporter_id',
+                    'manualField' => 'reporter_name',
+                    'label'       => 'Pelapor',
+                    'users'       => $reporters,
+                    'currentId'   => auth()->id(),
+                    'currentName' => null,
+                    'currentExtras' => [],
+                    'multi'       => false,
+                ])
             </div>
 
             <div class="col-md-6">

@@ -103,15 +103,16 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Pelapor</label>
-                <select name="reporter_id" class="form-select">
-                    <option value="">Pilih Pelapor...</option>
-                    @foreach($reporters as $rp)
-                    <option value="{{ $rp->id }}" {{ old('reporter_id', $violationRecord->reporter_id) == $rp->id ? 'selected' : '' }}>
-                        {{ $rp->name }}
-                    </option>
-                    @endforeach
-                </select>
+                @include('partials.staff-select', [
+                    'fieldName'   => 'reporter_id',
+                    'manualField' => 'reporter_name',
+                    'label'       => 'Pelapor',
+                    'users'       => $reporters,
+                    'currentId'   => $violationRecord->reporter_id,
+                    'currentName' => $violationRecord->reporter_name ?? null,
+                    'currentExtras' => [],
+                    'multi'       => false,
+                ])
             </div>
 
             <div class="col-md-6">

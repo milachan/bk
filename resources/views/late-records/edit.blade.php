@@ -41,19 +41,16 @@
                 <input type="number" name="duration_minutes" class="form-control" value="{{ old('duration_minutes', $lateRecord->duration_minutes) }}" min="1"/>
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Dicatat Oleh</label>
-                <select name="officer_id" id="officerSel" class="form-select"
-                    onchange="toggleOfficerManual(this)">
-                    <option value="">Pilih...</option>
-                    @foreach($officers as $o)
-                    <option value="{{ $o->id }}" {{ old('officer_id', $lateRecord->officer_id) == $o->id ? 'selected' : '' }}>{{ $o->name }}</option>
-                    @endforeach
-                    <option value="other" {{ (old('officer_id') === 'other' || ($lateRecord->officer_name && !$lateRecord->officer_id)) ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-                </select>
-                <input type="text" name="officer_name" id="officerManual"
-                    class="form-control mt-2 {{ (old('officer_id')==='other' || ($lateRecord->officer_name && !$lateRecord->officer_id)) ? '' : 'd-none' }}"
-                    placeholder="Nama pencatat..."
-                    value="{{ old('officer_name', $lateRecord->officer_name) }}">
+                @include('partials.staff-select', [
+                    'fieldName'   => 'officer_id',
+                    'manualField' => 'officer_name',
+                    'label'       => 'Dicatat Oleh',
+                    'users'       => $officers,
+                    'currentId'   => $lateRecord->officer_id,
+                    'currentName' => $lateRecord->officer_name,
+                    'currentExtras' => [],
+                    'multi'       => false,
+                ])
             </div>
             <div class="col-12">
                 <label class="form-label fw-semibold">Alasan</label>
@@ -73,13 +70,3 @@
 </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-function toggleOfficerManual(sel) {
-    const manual = document.getElementById('officerManual');
-    if (sel.value === 'other') { manual.classList.remove('d-none'); manual.focus(); }
-    else { manual.classList.add('d-none'); manual.value = ''; }
-}
-</script>
-@endpush

@@ -44,18 +44,16 @@
                 <small class="text-muted">Otomatis dihitung dari jam datang & masuk</small>
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Dicatat Oleh</label>
-                <select name="officer_id" id="officerSel" class="form-select"
-                    onchange="toggleOfficerManual(this)">
-                    <option value="">Pilih Pencatat...</option>
-                    @foreach($officers as $o)
-                    <option value="{{ $o->id }}" {{ (old('officer_id', auth()->id()) == $o->id) ? 'selected' : '' }}>{{ $o->name }}</option>
-                    @endforeach
-                    <option value="other" {{ old('officer_id')==='other' ? 'selected':'' }}>✏️ Lainnya (Ketik Manual)</option>
-                </select>
-                <input type="text" name="officer_name" id="officerManual"
-                    class="form-control mt-2 {{ old('officer_id')==='other' ? '' : 'd-none' }}"
-                    placeholder="Nama pencatat..." value="{{ old('officer_name') }}">
+                @include('partials.staff-select', [
+                    'fieldName'   => 'officer_id',
+                    'manualField' => 'officer_name',
+                    'label'       => 'Dicatat Oleh',
+                    'users'       => $officers,
+                    'currentId'   => auth()->id(),
+                    'currentName' => null,
+                    'currentExtras' => [],
+                    'multi'       => false,
+                ])
             </div>
             <div class="col-12">
                 <label class="form-label fw-semibold">Alasan</label>
@@ -93,15 +91,5 @@ function calcDuration() {
 }
 document.getElementById('arriveTime').addEventListener('change', calcDuration);
 document.getElementById('entryTime').addEventListener('change', calcDuration);
-</script>
-@endpush
-
-@push('scripts')
-<script>
-function toggleOfficerManual(sel) {
-    const manual = document.getElementById('officerManual');
-    if (sel.value === 'other') { manual.classList.remove('d-none'); manual.focus(); }
-    else { manual.classList.add('d-none'); manual.value = ''; }
-}
 </script>
 @endpush

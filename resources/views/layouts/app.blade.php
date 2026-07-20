@@ -194,18 +194,23 @@
 
         /* Responsive */
         @media (max-width: 991.98px) {
-            #sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); }
+            #sidebar {
+                transform: translateX(calc(-1 * var(--sidebar-width)));
+                z-index: 1040;
+            }
             #sidebar.show { transform: translateX(0); }
             #topbar { left: 0 !important; }
             #main-content { margin-left: 0 !important; }
-            .sidebar-overlay { display: block !important; }
         }
+
+        /* Overlay — HANYA muncul saat sidebar terbuka */
         .sidebar-overlay {
             display: none;
             position: fixed; inset: 0;
-            background: rgba(0,0,0,.5);
+            background: rgba(0,0,0,.45);
             z-index: 1039;
         }
+        .sidebar-overlay.active { display: block; }
 
         /* Select2 style fix */
         select.form-select { cursor: pointer; }
@@ -419,8 +424,9 @@
         const isMobile = window.innerWidth < 992;
 
         if (isMobile) {
-            sidebar.classList.toggle('show');
-            overlay.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
+            const isOpen = sidebar.classList.toggle('show');
+            // overlay pakai class .active, bukan style.display
+            overlay.classList.toggle('active', isOpen);
         } else {
             sidebar.classList.toggle('collapsed');
             topbar.classList.toggle('expanded');
@@ -428,19 +434,17 @@
         }
     }
 
-    // Tutup sidebar di mobile (dipanggil saat klik nav link)
+    // Tutup sidebar di mobile
     function closeSidebarOnMobile() {
         if (window.innerWidth < 992) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.remove('show');
-            overlay.style.display = 'none';
+            document.getElementById('sidebar').classList.remove('show');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         }
     }
 
     // Auto-close sidebar saat klik nav link di mobile
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('#sidebar .nav-link').forEach(function (link) {
+        document.querySelectorAll('#sidebar .nav-link, #sidebar a').forEach(function (link) {
             link.addEventListener('click', function () {
                 closeSidebarOnMobile();
             });
@@ -468,35 +472,80 @@
 
 {{-- Global staff dropdown helpers --}}
 <script>
-// Single select (radio) — toggle manual input
-function staffRadioOther(uid) {
-    const otherRadio = document.getElementById(uid + '_other');
-    const manualDiv  = document.getElementById(uid + '_manual');
-    if (!manualDiv) return;
-    if (otherRadio && otherRadio.checked) {
-        manualDiv.classList.remove('d-none');
-        manualDiv.querySelector('input[type="text"]')?.focus();
-    } else {
-        manualDiv.classList.add('d-none');
-    }
+/* ── Staff select panel helpers ── */
+
+// Toggle panel buka/tutup
+function staffTogglePanel(uid) {
+    const panel   = document.getElementById(uid + '_panel');
+    const chevron = document.getElementById(uid + '_chevron');
+    if (!panel) return;
+    const isOpen = panel.style.display !== 'none';
+    // Tutup semua panel lain dulu
+    document.querySelectorAll('[id$="_panel"]').forEach(p => {
+        if (p !== panel) {
+            p.style.display = 'none';
+            const ch = document.getElementById(p.id.replace('_panel','_chevron'));
+            if (ch) ch.style.transform = '';
+        }
+    });
+    panel.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
 }
 
-// Multi select (checkbox) — toggle manual input
-function staffCheckOther(uid) {
-    const otherCheck = document.getElementById(uid + '_other');
-    const manualDiv  = document.getElementById(uid + '_manual');
-    if (!manualDiv) return;
-    if (otherCheck && otherCheck.checked) {
-        manualDiv.classList.remove('d-none');
-        manualDiv.querySelector('input[type="text"]')?.focus();
-    } else {
-        manualDiv.classList.add('d-none');
-        const inp = manualDiv.querySelector('input[type="text"]');
-        if (inp) inp.value = '';
-    }
+// Toggle input manual saat "Lainnya" dipilih
+function staffOtherToggle(uid) {
+    const otherEl = document.getElementById(uid + '_other');
+    const manual  = document.getElementById(uid + '_manual');
+    if (!manual) return;
+    const show = otherEl && otherEl.checked;
+    manual.classList.toggle('d-none', !show);
+    if (show) manual.querySelector('input')?.focus();
+    else if (manual.querySelector('input')) manual.querySelector('input').value = '';
+    staffUpdatePreview(uid);
 }
 
-// Backward compat (dipakai di quick-entry)
+// Update teks tombol berdasarkan yang dipilih
+function staffUpdatePreview(uid) {
+    const panel   = document.getElementById(uid + '_panel');
+    const preview = document.getElementById(uid + '_preview');
+    if (!panel || !preview) return;
+
+    const names = [];
+    panel.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(inp => {
+        if (inp.value === 'other') {
+            const manualInp = document.querySelector('#' + uid + '_manual input');
+            if (manualInp && manualInp.value.trim()) names.push(manualInp.value.trim() + ' (manual)');
+        } else {
+            const lbl = panel.querySelector('label[for="' + inp.id + '"]');
+            if (lbl) names.push(lbl.firstChild.textContent.trim());
+        }
+    });
+    preview.textContent = names.length ? names.join(', ') : 'Belum dipilih';
+}
+
+// Filter search dalam panel
+function staffFilter(uid, query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.stf-item-' + uid).forEach(item => {
+        const name = item.getAttribute('data-name') || '';
+        item.style.display = name.includes(q) ? '' : 'none';
+    });
+}
+
+// Tutup panel saat klik di luar
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('[id$="_panel"]') && !e.target.closest('button[onclick*="staffTogglePanel"]')) {
+        document.querySelectorAll('[id$="_panel"]').forEach(p => {
+            p.style.display = 'none';
+            const ch = document.getElementById(p.id.replace('_panel','_chevron'));
+            if (ch) ch.style.transform = '';
+        });
+    }
+});
+
+// Backward compat
+function staffRadioOther(uid)  { staffOtherToggle(uid); }
+function staffCheckOther(uid)  { staffOtherToggle(uid); }
 function staffToggleManual(sel, manualId) {
     const el = document.getElementById(manualId);
     if (!el) return;
@@ -510,7 +559,6 @@ function staffToggleManualMulti(sel, manualId) {
     if (vals.includes('other')) { el.classList.remove('d-none'); el.focus(); }
     else { el.classList.add('d-none'); el.value = ''; }
 }
-// toggleManual alias (dipakai di late-records)
 function toggleManual(sel, manualId) { staffToggleManual(sel, manualId); }
 function toggleManualMulti(sel, manualId) { staffToggleManualMulti(sel, manualId); }
 </script>
