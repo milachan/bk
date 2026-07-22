@@ -7,14 +7,10 @@ use App\Models\Student;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
-use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class StudentsImport implements ToCollection, WithHeadingRow, SkipsOnError, WithChunkReading
+class StudentsImport implements ToCollection, WithHeadingRow, WithChunkReading
 {
-    use SkipsErrors;
 
     public int $imported = 0;
     public int $skipped  = 0;

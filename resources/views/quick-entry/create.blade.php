@@ -242,9 +242,10 @@
             @error('violation_category_id')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
         <div class="col-6 col-md-2">
-            <label class="form-label form-label-sm fw-semibold mb-1">Poin <span class="text-danger">*</span></label>
+            <label class="form-label form-label-sm fw-semibold mb-1">Poin</label>
             <input type="number" name="points" id="qViolationPts" class="form-control form-control-sm"
                 min="0" value="{{ old('points',0) }}">
+            <small class="text-muted" style="font-size:.68rem">Otomatis dari jenis (opsional)</small>
             @error('points')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
         <div class="col-12 col-md-3">

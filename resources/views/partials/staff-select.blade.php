@@ -63,14 +63,14 @@
 {{-- Panel pilihan — pakai position:fixed agar tidak terpotong parent --}}
 <div id="{{ $uid }}_panel"
      class="stf-panel"
-     style="display:none; position:fixed; min-width:280px; max-width:400px;
+     style="display:none; position:fixed; min-width:320px; max-width:520px;
             background:#fff; border:1px solid #dee2e6; border-radius:.5rem;
-            max-height:260px; overflow-y:auto;
+            max-height:300px; overflow-y:auto;
             box-shadow:0 8px 24px rgba(0,0,0,.15); z-index:9999;">
 
     <div class="p-2">
-        {{-- Search filter jika user > 5 --}}
-        @if($users->count() > 5)
+        {{-- Search filter jika user > 3 --}}
+        @if($users->count() > 3)
         <div class="mb-2">
             <input type="text" class="form-control form-control-sm"
                 placeholder="Cari nama..."
@@ -80,18 +80,18 @@
 
         {{-- Daftar user --}}
         @foreach($users as $u)
-        <div class="form-check px-2 py-1 rounded stf-item-{{ $uid }}"
+        <div class="d-flex align-items-center gap-2 px-2 py-1 rounded stf-item-{{ $uid }}"
              data-name="{{ strtolower($u->name) }}">
-            <input class="form-check-input" type="{{ $multi ? 'checkbox' : 'radio' }}"
+            <input class="form-check-input mt-0 flex-shrink-0" type="{{ $multi ? 'checkbox' : 'radio' }}"
                 name="{{ $fieldName }}{{ $multi ? '[]' : '' }}"
                 id="{{ $uid }}_{{ $u->id }}"
                 value="{{ $u->id }}"
                 {{ in_array((string)$u->id, array_map('strval', $oldIds)) ? 'checked' : '' }}
                 onchange="staffUpdatePreview('{{ $uid }}')">
-            <label class="form-check-label w-100" for="{{ $uid }}_{{ $u->id }}" style="cursor:pointer;font-size:.875rem">
-                {{ $u->name }}
+            <label class="form-check-label d-flex align-items-center gap-1 flex-wrap" for="{{ $uid }}_{{ $u->id }}" style="cursor:pointer;font-size:.875rem;line-height:1.3">
+                <span>{{ $u->name }}</span>
                 @if(!empty($u->jabatan))
-                <small class="text-muted ms-1">{{ $u->jabatan }}</small>
+                <span class="text-muted" style="font-size:.72rem;white-space:nowrap">{{ $u->jabatan }}</span>
                 @endif
             </label>
         </div>
@@ -100,8 +100,8 @@
         <hr class="my-1">
 
         {{-- Opsi Lainnya --}}
-        <div class="form-check px-2 py-1 rounded">
-            <input class="form-check-input" type="{{ $multi ? 'checkbox' : 'radio' }}"
+        <div class="d-flex align-items-center gap-2 px-2 py-1 rounded">
+            <input class="form-check-input mt-0 flex-shrink-0" type="{{ $multi ? 'checkbox' : 'radio' }}"
                 name="{{ $fieldName }}{{ $multi ? '[]' : '' }}"
                 id="{{ $uid }}_other"
                 value="other"

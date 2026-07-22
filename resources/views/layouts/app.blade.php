@@ -517,20 +517,29 @@ function staffTogglePanel(uid) {
 
     function reposition() {
         const r = btn.getBoundingClientRect();
-        const w = Math.max(r.width, 280);
+        const w = Math.max(r.width, 320); // minimal 320px agar konten tidak kepotong
         panel.style.width = w + 'px';
         // Jaga agar tidak keluar kanan layar
         const left = Math.min(r.left, window.innerWidth - w - 8);
-        panel.style.left  = left + 'px';
-        const ph = Math.min(260, panel.scrollHeight + 4);
-        if (r.bottom + ph + 8 > window.innerHeight && r.top > ph) {
-            panel.style.top = (r.top - ph - 4) + 'px';
+        panel.style.left  = Math.max(8, left) + 'px'; // jangan sampai keluar kiri
+        // Tentukan arah buka (bawah atau atas) & pastikan tidak overflow viewport
+        const panelH = Math.min(260, panel.scrollHeight + 4);
+        const spaceBelow = window.innerHeight - r.bottom - 8;
+        const spaceAbove = r.top - 8;
+        if (spaceBelow >= panelH || spaceBelow >= spaceAbove) {
+            // Buka ke bawah
+            const topPos = Math.min(r.bottom + 2, window.innerHeight - panelH - 4);
+            panel.style.top = Math.max(4, topPos) + 'px';
         } else {
-            panel.style.top = (r.bottom + 2) + 'px';
+            // Buka ke atas
+            const topPos = Math.max(4, r.top - panelH - 4);
+            panel.style.top = topPos + 'px';
         }
     }
 
     panel.style.display = 'block';
+    // Force reflow agar scrollHeight akurat & positioning tepat
+    void panel.offsetHeight;
     reposition();
     if (chevron) chevron.style.transform = 'rotate(180deg)';
 
