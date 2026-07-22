@@ -338,17 +338,20 @@
                 placeholder="Uraikan masalah yang dikonseling...">{{ old('problem') }}</textarea>
             @error('problem')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
             <label class="form-label form-label-sm fw-semibold mb-1">Hasil Konseling</label>
             <textarea name="result" class="form-control form-control-sm" rows="2" placeholder="Hasil konseling...">{{ old('result') }}</textarea>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
             <label class="form-label form-label-sm fw-semibold mb-1">Solusi</label>
             <textarea name="solution" class="form-control form-control-sm" rows="2" placeholder="Solusi yang diberikan...">{{ old('solution') }}</textarea>
         </div>
-        <div class="col-12 col-md-4">
-            <label class="form-label form-label-sm fw-semibold mb-1">Tindak Lanjut</label>
-            <textarea name="follow_up" class="form-control form-control-sm" rows="2" placeholder="Rencana tindak lanjut...">{{ old('follow_up') }}</textarea>
+        <div class="col-12">
+            <label class="form-label form-label-sm fw-semibold mb-1">Unggah Foto / Dokumen Pendukung</label>
+            <input type="file" name="attachment" class="form-control form-control-sm @error('attachment') is-invalid @enderror"
+                accept="image/*,.pdf,.doc,.docx">
+            <small class="text-muted">Format: JPG, PNG, PDF, DOC. Maks. 5MB</small>
+            @error('attachment')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
     </div>
 </div>
@@ -394,17 +397,20 @@
                 placeholder="Alasan pemanggilan orang tua...">{{ old('reason') }}</textarea>
             @error('reason')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
             <label class="form-label form-label-sm fw-semibold mb-1">Hasil Pertemuan</label>
             <textarea name="meeting_result" class="form-control form-control-sm" rows="2" placeholder="Hasil pertemuan...">{{ old('meeting_result') }}</textarea>
         </div>
-        <div class="col-12 col-md-4">
-            <label class="form-label form-label-sm fw-semibold mb-1">Kesepakatan</label>
-            <textarea name="agreement" class="form-control form-control-sm" rows="2" placeholder="Kesepakatan yang dicapai...">{{ old('agreement') }}</textarea>
-        </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
             <label class="form-label form-label-sm fw-semibold mb-1">Tindak Lanjut</label>
             <textarea name="follow_up" class="form-control form-control-sm" rows="2" placeholder="Rencana tindak lanjut...">{{ old('follow_up') }}</textarea>
+        </div>
+        <div class="col-12">
+            <label class="form-label form-label-sm fw-semibold mb-1">Unggah Dokumen / Foto Pendukung</label>
+            <input type="file" name="attachment" class="form-control form-control-sm @error('attachment') is-invalid @enderror"
+                accept="image/*,.pdf,.doc,.docx">
+            <small class="text-muted">Format: JPG, PNG, PDF, DOC. Maks. 5MB</small>
+            @error('attachment')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
     </div>
 </div>
@@ -460,6 +466,13 @@
         <div class="col-12 col-md-4">
             <label class="form-label form-label-sm fw-semibold mb-1">Tindak Lanjut</label>
             <textarea name="follow_up" class="form-control form-control-sm" rows="2" placeholder="Rencana tindak lanjut...">{{ old('follow_up') }}</textarea>
+        </div>
+        <div class="col-12">
+            <label class="form-label form-label-sm fw-semibold mb-1">Unggah Foto / Dokumen Pendukung</label>
+            <input type="file" name="attachment" class="form-control form-control-sm @error('attachment') is-invalid @enderror"
+                accept="image/*,.pdf,.doc,.docx">
+            <small class="text-muted">Format: JPG, PNG, PDF, DOC. Maks. 5MB</small>
+            @error('attachment')<div class="text-danger" style="font-size:.72rem">{{ $message }}</div>@enderror
         </div>
     </div>
 </div>

@@ -48,7 +48,6 @@
             <th style="width:50px">Lokasi</th>
             <th>Alasan Pemanggilan</th>
             <th style="width:60px">Ortu Hadir</th>
-            <th style="width:110px">Kesepakatan</th>
             <th style="width:90px">Penangani</th>
         </tr>
     </thead>
@@ -73,7 +72,6 @@
                     <span class="b-tidak">Tidak</span>
                 @endif
             </td>
-            <td>{{ $r->agreement ?? '-' }}</td>
             <td>@php
                 $names = [];
                 if ($r->handler?->name) $names[] = $r->handler->name;

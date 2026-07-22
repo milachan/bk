@@ -29,7 +29,7 @@ class ParentMeetingsExport implements FromCollection, WithHeadings, WithMapping,
 
     public function headings(): array
     {
-        return ['No', 'Tanggal', 'NIS', 'Nama Siswa', 'Kelas', 'Alasan', 'Orang Tua Hadir', 'Hasil Pertemuan', 'Kesepakatan', 'Tindak Lanjut', 'Penangani'];
+        return ['No', 'Tanggal', 'NIS', 'Nama Siswa', 'Kelas', 'Alasan', 'Orang Tua Hadir', 'Hasil Pertemuan', 'Penangani'];
     }
 
     public function map($row): array
@@ -44,8 +44,6 @@ class ParentMeetingsExport implements FromCollection, WithHeadings, WithMapping,
             $row->reason,
             $row->parent_attended ? 'Hadir' : 'Tidak Hadir',
             $row->meeting_result,
-            $row->agreement,
-            $row->follow_up,
             $row->handler?->name,
         ];
     }

@@ -42,7 +42,6 @@
             <th style="width:50px">Lokasi</th>
             <th>Masalah / Topik</th>
             <th style="width:110px">Solusi</th>
-            <th style="width:100px">Tindak Lanjut</th>
             <th style="width:90px">Guru BK</th>
         </tr>
     </thead>
@@ -61,7 +60,6 @@
             </td>
             <td>{{ $r->problem }}</td>
             <td>{{ $r->solution ?? '-' }}</td>
-            <td>{{ $r->follow_up ?? '-' }}</td>
             <td>@php
                 $names = [];
                 if ($r->counselor?->name) $names[] = $r->counselor->name;

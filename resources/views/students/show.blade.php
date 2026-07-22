@@ -170,10 +170,6 @@
                                     {{ $item['data']->parent_attended ? 'Hadir' : 'Tidak Hadir' }}
                                 </span>
                             </p>
-                            @if($item['data']->agreement)
-                            <p class="mb-0 small"><strong>Kesepakatan:</strong> {{ $item['data']->agreement }}</p>
-                            @endif
-
                         @elseif($item['type'] === 'home_visit')
                             <p class="mb-1 small"><strong>Tujuan:</strong> {{ $item['data']->purpose }}</p>
                             @if($item['data']->conclusion)

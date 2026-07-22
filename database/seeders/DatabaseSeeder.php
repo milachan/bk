@@ -177,20 +177,20 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // Sample counselings
+        // Sample counselings (without follow_up — column dropped)
         \App\Models\Counseling::firstOrCreate(
             ['student_id' => $student1->id, 'date' => now()->subDays(5)->format('Y-m-d')],
-            ['student_id' => $student1->id, 'date' => now()->subDays(5)->format('Y-m-d'), 'problem' => 'Sering terlambat dan motivasi belajar menurun', 'result' => 'Siswa mengakui kesulitan bangun pagi dan merasa kurang semangat', 'solution' => 'Diberikan motivasi dan jadwal belajar terstruktur', 'follow_up' => 'Pantau kehadiran selama 2 minggu ke depan', 'counselor_id' => $bkUser->id]
+            ['student_id' => $student1->id, 'date' => now()->subDays(5)->format('Y-m-d'), 'problem' => 'Sering terlambat dan motivasi belajar menurun', 'result' => 'Siswa mengakui kesulitan bangun pagi dan merasa kurang semangat', 'solution' => 'Diberikan motivasi dan jadwal belajar terstruktur', 'counselor_id' => $bkUser->id]
         );
         \App\Models\Counseling::firstOrCreate(
             ['student_id' => $student2->id, 'date' => now()->subDays(2)->format('Y-m-d')],
-            ['student_id' => $student2->id, 'date' => now()->subDays(2)->format('Y-m-d'), 'problem' => 'Membolos karena masalah dengan teman sekelas', 'result' => 'Terdapat konflik dengan teman, siswa merasa tidak nyaman', 'solution' => 'Mediasi dengan teman yang bersangkutan', 'follow_up' => 'Jadwalkan pertemuan bersama', 'counselor_id' => $bkUser->id]
+            ['student_id' => $student2->id, 'date' => now()->subDays(2)->format('Y-m-d'), 'problem' => 'Membolos karena masalah dengan teman sekelas', 'result' => 'Terdapat konflik dengan teman, siswa merasa tidak nyaman', 'solution' => 'Mediasi dengan teman yang bersangkutan', 'counselor_id' => $bkUser->id]
         );
 
-        // Sample parent meeting
+        // Sample parent meeting (without agreement — column dropped)
         \App\Models\ParentMeeting::firstOrCreate(
             ['student_id' => $student2->id, 'meeting_date' => now()->subDays(1)->format('Y-m-d')],
-            ['student_id' => $student2->id, 'meeting_date' => now()->subDays(1)->format('Y-m-d'), 'reason' => 'Siswa sering membolos, perlu perhatian dari orang tua', 'parent_attended' => true, 'meeting_result' => 'Orang tua berjanji akan lebih memantau anaknya', 'agreement' => 'Orang tua akan mengantar jemput selama 1 bulan', 'follow_up' => 'Pantau dan evaluasi setelah 1 bulan', 'handler_id' => $bkUser->id]
+            ['student_id' => $student2->id, 'meeting_date' => now()->subDays(1)->format('Y-m-d'), 'reason' => 'Siswa sering membolos, perlu perhatian dari orang tua', 'parent_attended' => true, 'meeting_result' => 'Orang tua berjanji akan lebih memantau anaknya', 'handler_id' => $bkUser->id]
         );
 
         // Sample home visit

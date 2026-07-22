@@ -123,7 +123,7 @@ class QuickEntryController extends Controller
             'student_id'            => 'required|exists:students,id',
             'violation_category_id' => 'required',
             'date'                  => 'required|date',
-            'points'                => 'required|integer|min:0',
+            'points'                => 'nullable|integer|min:0',
             'description'           => 'nullable|string',
             'reporter_id'           => 'nullable',
             'reporter_name'         => 'nullable|string|max:255',
@@ -179,25 +179,29 @@ class QuickEntryController extends Controller
             'problem'       => 'required|string',
             'result'        => 'nullable|string',
             'solution'      => 'nullable|string',
-            'follow_up'     => 'nullable|string',
             'counselor_id'  => 'nullable',
             'counselor_name'=> 'nullable|string|max:255',
+            'attachment'    => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $staff = $this->resolveMultiStaff($request, 'counselor_id', 'counselor_name', 'extra_counselors');
 
-        $r = Counseling::create([
+        $data = [
             'student_id'        => $request->student_id,
             'date'              => $request->date,
             'problem'           => $request->problem,
             'result'            => $request->result,
             'solution'          => $request->solution,
-            'follow_up'         => $request->follow_up,
             'counselor_id'      => $staff['counselor_id'],
             'counselor_name'    => $staff['counselor_name'],
             'extra_counselors'  => $staff['extra_counselors'],
-        ]);
+        ];
 
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $request->file('attachment')->store('counselings', 'public');
+        }
+
+        $r = Counseling::create($data);
         ActivityLog::log('created', 'counseling', $r->id, 'Input konseling: '.$r->student->name);
     }
 
@@ -209,27 +213,31 @@ class QuickEntryController extends Controller
             'reason'          => 'required|string',
             'parent_attended' => 'required|boolean',
             'meeting_result'  => 'nullable|string',
-            'agreement'       => 'nullable|string',
             'follow_up'       => 'nullable|string',
             'handler_id'      => 'nullable',
             'handler_name'    => 'nullable|string|max:255',
+            'attachment'      => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $staff = $this->resolveMultiStaff($request, 'handler_id', 'handler_name', 'extra_handlers');
 
-        $r = ParentMeeting::create([
+        $data = [
             'student_id'      => $request->student_id,
             'meeting_date'    => $request->meeting_date,
             'reason'          => $request->reason,
             'parent_attended' => $request->parent_attended,
             'meeting_result'  => $request->meeting_result,
-            'agreement'       => $request->agreement,
             'follow_up'       => $request->follow_up,
             'handler_id'      => $staff['handler_id'],
             'handler_name'    => $staff['handler_name'],
             'extra_handlers'  => $staff['extra_handlers'],
-        ]);
+        ];
 
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $request->file('attachment')->store('parent-meetings', 'public');
+        }
+
+        $r = ParentMeeting::create($data);
         ActivityLog::log('created', 'parent_meeting', $r->id, 'Input pemanggilan ortu: '.$r->student->name);
     }
 
@@ -245,11 +253,12 @@ class QuickEntryController extends Controller
             'follow_up'    => 'nullable|string',
             'visitor_id'   => 'nullable',
             'visitor_name' => 'nullable|string|max:255',
+            'attachment'   => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $staff = $this->resolveMultiStaff($request, 'visitor_id', 'visitor_name', 'extra_visitors');
 
-        $r = HomeVisit::create([
+        $data = [
             'student_id'     => $request->student_id,
             'visit_date'     => $request->visit_date,
             'address'        => $request->address,
@@ -260,8 +269,13 @@ class QuickEntryController extends Controller
             'visitor_id'     => $staff['visitor_id'],
             'visitor_name'   => $staff['visitor_name'],
             'extra_visitors' => $staff['extra_visitors'],
-        ]);
+        ];
 
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $request->file('attachment')->store('home-visits', 'public');
+        }
+
+        $r = HomeVisit::create($data);
         ActivityLog::log('created', 'home_visit', $r->id, 'Input home visit: '.$r->student->name);
     }
 }

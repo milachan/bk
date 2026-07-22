@@ -29,7 +29,7 @@ class CounselingsExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function headings(): array
     {
-        return ['No', 'Tanggal', 'NIS', 'Nama Siswa', 'Kelas', 'Masalah', 'Hasil', 'Solusi', 'Tindak Lanjut', 'Guru BK'];
+        return ['No', 'Tanggal', 'NIS', 'Nama Siswa', 'Kelas', 'Masalah', 'Hasil', 'Solusi', 'Guru BK'];
     }
 
     public function map($row): array
@@ -44,7 +44,6 @@ class CounselingsExport implements FromCollection, WithHeadings, WithMapping, Wi
             $row->problem,
             $row->result,
             $row->solution,
-            $row->follow_up,
             $row->counselor?->name,
         ];
     }
