@@ -11,6 +11,7 @@ class HomeVisit extends Model
         'student_id', 'visit_date', 'address', 'purpose',
         'result', 'conclusion', 'follow_up',
         'visitor_id', 'visitor_name', 'extra_visitors',
+        'attachment',
     ];
 
     protected $casts = [

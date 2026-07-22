@@ -89,9 +89,9 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label fw-semibold">Poin <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">Poin</label>
                 <input type="number" name="points" id="points" class="form-control @error('points') is-invalid @enderror"
-                    value="{{ old('points', $violationRecord->points) }}" min="0" max="100" required/>
+                    value="{{ old('points', $violationRecord->points) }}" min="0" max="100"/>
                 @error('points')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 

@@ -145,7 +145,6 @@
                     <th>Kelas</th>
                     <th>Alasan Pemanggilan</th>
                     <th>Kehadiran Ortu</th>
-                    <th>Kesepakatan</th>
                     <th>Penanganan</th>
                     <th class="text-center">Aksi</th>
                 </tr>
@@ -173,9 +172,6 @@
                             <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Tidak Hadir</span>
                         @endif
                     </td>
-                    <td class="small" style="max-width:180px">
-                        <span class="text-truncate d-block text-muted" title="{{ $r->agreement }}">{{ $r->agreement ?? '-' }}</span>
-                    </td>
                     <td class="small text-muted">@include('partials.staff-name', ['primary'=>$r->handler, 'manualName'=>$r->handler_name, 'extras'=>$r->extra_handlers])</td>
                     <td class="text-center">
                         <div class="btn-group btn-group-sm">
@@ -195,7 +191,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9" class="text-center py-5 text-muted">
+                    <td colspan="8" class="text-center py-5 text-muted">
                         <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>
                         Tidak ada data pemanggilan orang tua
                     </td>

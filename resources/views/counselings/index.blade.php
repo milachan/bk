@@ -134,7 +134,6 @@
                     <th>Nama Siswa</th>
                     <th>Kelas</th>
                     <th>Permasalahan</th>
-                    <th>Tindak Lanjut</th>
                     <th>Guru BK</th>
                     <th class="text-center">Aksi</th>
                 </tr>
@@ -155,12 +154,6 @@
                     <td class="small" style="max-width:220px">
                         <span class="text-truncate d-block" title="{{ $r->problem }}">{{ $r->problem }}</span>
                     </td>
-                    <td class="small" style="max-width:160px">
-                        @if($r->follow_up)
-                        <span class="text-truncate d-block text-muted" title="{{ $r->follow_up }}">{{ $r->follow_up }}</span>
-                        @else<span class="text-muted">-</span>
-                        @endif
-                    </td>
                     <td class="small text-muted">@include('partials.staff-name', ['primary'=>$r->counselor, 'manualName'=>$r->counselor_name, 'extras'=>$r->extra_counselors])</td>
                     <td class="text-center">
                         <div class="btn-group btn-group-sm">
@@ -180,7 +173,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center py-5 text-muted">
+                    <td colspan="7" class="text-center py-5 text-muted">
                         <i class="bi bi-chat-heart fs-1 d-block mb-2 opacity-25"></i>
                         Tidak ada data konseling
                     </td>

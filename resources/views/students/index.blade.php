@@ -250,9 +250,13 @@
                            class="form-control @error('file') is-invalid @enderror"
                            accept=".xlsx,.xls,.csv" required
                            onchange="updateFileName(this)"/>
+                    <div id="fileSizeError" class="text-danger small mt-1 d-none">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Ukuran file melebihi 5MB. Silakan kurangi data atau gunakan file yang lebih kecil.
+                    </div>
                     @error('file')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                    <small class="text-muted d-block mt-1">Maks. 5MB. Format: .xlsx, .xls, .csv</small>
                     <div class="form-text mt-1" id="selectedFileName">Belum ada file dipilih.</div>
 
                     {{-- Preview file terpilih --}}
@@ -318,10 +322,25 @@ function updateFileName(input) {
     const nameEl  = document.getElementById('previewName');
     const sizeEl  = document.getElementById('previewSize');
     const hint    = document.getElementById('selectedFileName');
+    const sizeErr = document.getElementById('fileSizeError');
 
     if (input.files && input.files[0]) {
         const file = input.files[0];
         const size = (file.size / 1024).toFixed(1);
+        
+        // Validasi ukuran max 5MB = 5120 KB
+        if (file.size > 5120 * 1024) {
+            sizeErr.classList.remove('d-none');
+            input.value = ''; // reset
+            preview.classList.add('d-none');
+            hint.textContent = 'Belum ada file dipilih.';
+            document.getElementById('importBtn').disabled = true;
+            return;
+        } else {
+            sizeErr.classList.add('d-none');
+            document.getElementById('importBtn').disabled = false;
+        }
+        
         nameEl.textContent = file.name;
         sizeEl.textContent = size + ' KB';
         preview.classList.remove('d-none');
@@ -331,7 +350,9 @@ function updateFileName(input) {
 function clearFile() {
     document.getElementById('importFileInput').value = '';
     document.getElementById('filePreview').classList.add('d-none');
+    document.getElementById('fileSizeError').classList.add('d-none');
     document.getElementById('selectedFileName').textContent = 'Belum ada file dipilih.';
+    document.getElementById('importBtn').disabled = false;
 }
 
 // Tampilkan spinner saat submit
@@ -347,3 +368,6 @@ new bootstrap.Modal(document.getElementById('importModal')).show();
 @endif
 </script>
 @endpush
+
+
+

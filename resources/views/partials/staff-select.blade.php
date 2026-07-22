@@ -38,17 +38,21 @@
     $uid = 'stfsel_' . preg_replace('/[^a-z0-9]/i', '_', $fieldName) . '_' . substr(md5($fieldName.$label), 0, 4);
 @endphp
 
+@if($label)
 <label class="form-label fw-semibold mb-1">
     {{ $label }}
     @if($multi)
     <span class="text-muted fw-normal" style="font-size:.7rem">(boleh lebih dari satu)</span>
     @endif
 </label>
+@endif
 
 {{-- Tombol toggle — tampilkan siapa yang dipilih --}}
+<div class="stf-wrap" style="position:relative">
 <button type="button"
     class="btn btn-light border w-100 text-start d-flex align-items-center justify-content-between gap-2"
     style="min-height:38px;font-size:.875rem"
+    id="{{ $uid }}_btn"
     onclick="staffTogglePanel('{{ $uid }}')">
     <span id="{{ $uid }}_preview" class="text-truncate" style="flex:1">
         {{ $previewText }}
@@ -56,10 +60,13 @@
     <i class="bi bi-chevron-down flex-shrink-0" id="{{ $uid }}_chevron" style="font-size:.7rem;transition:transform .2s"></i>
 </button>
 
-{{-- Panel pilihan — tersembunyi secara default --}}
+{{-- Panel pilihan — pakai position:fixed agar tidak terpotong parent --}}
 <div id="{{ $uid }}_panel"
-     class="border rounded-3 mt-1"
-     style="display:none; background:#fff; max-height:220px; overflow-y:auto; box-shadow:0 4px 12px rgba(0,0,0,.1)">
+     class="stf-panel"
+     style="display:none; position:fixed; min-width:280px; max-width:400px;
+            background:#fff; border:1px solid #dee2e6; border-radius:.5rem;
+            max-height:260px; overflow-y:auto;
+            box-shadow:0 8px 24px rgba(0,0,0,.15); z-index:9999;">
 
     <div class="p-2">
         {{-- Search filter jika user > 5 --}}
@@ -90,7 +97,6 @@
         </div>
         @endforeach
 
-        {{-- Separator --}}
         <hr class="my-1">
 
         {{-- Opsi Lainnya --}}
@@ -107,7 +113,7 @@
         </div>
 
         {{-- Input manual --}}
-        <div id="{{ $uid }}_manual" class="px-2 pb-2 {{ $showManual ? '' : 'd-none' }}">
+        <div id="{{ $uid }}_manual" class="px-2 pb-1 {{ $showManual ? '' : 'd-none' }}">
             <input type="text" name="{{ $manualField }}"
                 class="form-control form-control-sm"
                 placeholder="Ketik nama lengkap..."
@@ -117,7 +123,7 @@
 
         {{-- Extra names chip (saat edit) --}}
         @if(!empty($currentExtras))
-        <div class="px-2 pb-2">
+        <div class="px-2 pb-2 pt-1">
             <small class="text-muted d-block mb-1" style="font-size:.7rem">Tersimpan sebelumnya:</small>
             <div class="d-flex flex-wrap gap-1">
                 @foreach($currentExtras as $e)
@@ -128,3 +134,4 @@
         @endif
     </div>
 </div>
+</div>{{-- /position:relative wrapper --}}

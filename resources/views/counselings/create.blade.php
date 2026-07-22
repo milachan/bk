@@ -9,7 +9,7 @@
 
 <div class="row justify-content-center">
 <div class="col-12 col-lg-9">
-<form action="{{ route('counselings.store') }}" method="POST">
+<form action="{{ route('counselings.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="form-card">
         <div class="row g-3">
@@ -55,15 +55,16 @@
             </div>
 
             <div class="col-12">
-                <label class="form-label fw-semibold">Tindak Lanjut</label>
-                <textarea name="follow_up" class="form-control @error('follow_up') is-invalid @enderror"
-                    rows="2" placeholder="Rencana pertemuan atau tindak lanjut berikutnya...">{{ old('follow_up') }}</textarea>
-                @error('follow_up')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <label class="form-label fw-semibold">Unggah Foto / Dokumen Pendukung</label>
+                <input type="file" name="attachment" class="form-control @error('attachment') is-invalid @enderror"
+                    accept="image/*,.pdf,.doc,.docx"/>
+                <small class="text-muted">Format: JPG, PNG, PDF, DOC. Maks. 5MB</small>
+                @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-12">
                 @include('partials.staff-select', [
-                    'fieldName'   => 'counselor_id[]',
+                    'fieldName'   => 'counselor_id',
                     'manualField' => 'counselor_name',
                     'label'       => 'Guru BK / Konselor',
                     'users'       => $counselors,

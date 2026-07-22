@@ -9,8 +9,9 @@ class ParentMeeting extends Model
 {
     protected $fillable = [
         'student_id', 'meeting_date', 'reason', 'parent_attended',
-        'meeting_result', 'agreement', 'follow_up',
+        'meeting_result', 'follow_up',
         'handler_id', 'handler_name', 'extra_handlers',
+        'attachment',
     ];
 
     protected $casts = [

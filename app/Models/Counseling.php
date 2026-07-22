@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Counseling extends Model
 {
     protected $fillable = [
-        'student_id', 'date', 'problem', 'result', 'solution', 'follow_up',
+        'student_id', 'date', 'problem', 'result', 'solution',
         'counselor_id', 'counselor_name', 'extra_counselors',
+        'attachment',
     ];
 
     protected $casts = [

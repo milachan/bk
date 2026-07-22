@@ -127,7 +127,7 @@
                     @error('location')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
                 <label class="form-label fw-semibold">Kelas</label>
-                <select name="class_id" class="form-select @error('class_id') is-invalid @enderror">
+                <select name="class_id" class="form-select @error('class_id') is-invalid @enderror" size="6">
                     <option value="">Pilih Kelas...</option>
                     @foreach($classes as $c)
                     <option value="{{ $c->id }}" {{ old('class_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
@@ -197,12 +197,16 @@
                 <form action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
                     @csrf
                     <label class="form-label fw-semibold">Pilih File Excel</label>
-                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required id="importFileInput"/>
+                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required id="importFileInput" onchange="validateImportFile(this)"/>
+                    <div id="fileSizeErrorCreate" class="text-danger small mt-1 d-none">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Ukuran file melebihi 5MB.
+                    </div>
+                    <small class="text-muted d-block mt-1">Maks. 5MB. Format: .xlsx, .xls, .csv</small>
                 </form>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="importForm" class="btn btn-success">
+                <button type="submit" form="importForm" class="btn btn-success" id="importBtnCreate">
                     <i class="bi bi-upload me-1"></i> Mulai Import
                 </button>
             </div>
@@ -220,5 +224,26 @@ function previewPhoto(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+function validateImportFile(input) {
+    const sizeErr = document.getElementById('fileSizeErrorCreate');
+    const btn = document.getElementById('importBtnCreate');
+    if (input.files && input.files[0]) {
+        if (input.files[0].size > 5120 * 1024) {
+            sizeErr.classList.remove('d-none');
+            input.value = '';
+            btn.disabled = true;
+        } else {
+            sizeErr.classList.add('d-none');
+            btn.disabled = false;
+        }
+    } else {
+        sizeErr.classList.add('d-none');
+        btn.disabled = false;
+    }
+}
 </script>
 @endpush
+
+
+

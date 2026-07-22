@@ -89,10 +89,10 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label fw-semibold">Poin <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">Poin</label>
                 <input type="number" name="points" id="points" class="form-control @error('points') is-invalid @enderror"
-                    value="{{ old('points', 0) }}" min="0" max="100" required/>
-                <small class="text-muted">Otomatis dari jenis pelanggaran</small>
+                    value="{{ old('points', 0) }}" min="0" max="100"/>
+                <small class="text-muted">Otomatis dari jenis pelanggaran (opsional)</small>
                 @error('points')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 

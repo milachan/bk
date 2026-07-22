@@ -9,7 +9,7 @@
 
 <div class="row justify-content-center">
 <div class="col-12 col-lg-9">
-<form action="{{ route('home-visits.update', $homeVisit) }}" method="POST">
+<form action="{{ route('home-visits.update', $homeVisit) }}" method="POST" enctype="multipart/form-data">
     @csrf @method('PUT')
     <div class="form-card">
         <div class="row g-3">
@@ -71,8 +71,23 @@
             </div>
 
             <div class="col-12">
+                <label class="form-label fw-semibold">Unggah Foto / Dokumen Pendukung</label>
+                @if($homeVisit->attachment)
+                <div class="mb-2">
+                    <a href="{{ Storage::url($homeVisit->attachment) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-paperclip me-1"></i> Lihat File Saat Ini
+                    </a>
+                </div>
+                @endif
+                <input type="file" name="attachment" class="form-control @error('attachment') is-invalid @enderror"
+                    accept="image/*,.pdf,.doc,.docx">
+                <small class="text-muted">Format: JPG, PNG, PDF, DOC, DOCX. Maks: 5MB. Biarkan kosong jika tidak ingin mengubah file.</small>
+                @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="col-12">
                 @include('partials.staff-select', [
-                    'fieldName'    => 'visitor_id[]',
+                    'fieldName'    => 'visitor_id',
                     'manualField'  => 'visitor_name',
                     'label'        => 'Petugas Kunjungan',
                     'users'        => $visitors,

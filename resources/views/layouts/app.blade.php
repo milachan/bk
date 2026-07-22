@@ -189,6 +189,7 @@
             border-radius: .75rem;
             border: 1px solid #e9ecef;
             padding: 1.5rem;
+            overflow: visible;
         }
         [data-bs-theme="dark"] .form-card { background: #212529; border-color: #495057; }
 
@@ -474,22 +475,68 @@
 <script>
 /* ── Staff select panel helpers ── */
 
-// Toggle panel buka/tutup
+// Toggle panel buka/tutup � panel dipindah ke body agar tidak terpotong parent
 function staffTogglePanel(uid) {
     const panel   = document.getElementById(uid + '_panel');
     const chevron = document.getElementById(uid + '_chevron');
-    if (!panel) return;
+    // Cari tombol: bisa di .stf-wrap atau previousElementSibling
+    const wrap    = document.getElementById(uid + '_btn');
+    const btn     = wrap;
+    if (!panel || !btn) return;
     const isOpen = panel.style.display !== 'none';
-    // Tutup semua panel lain dulu
-    document.querySelectorAll('[id$="_panel"]').forEach(p => {
+
+    // Tutup semua panel lain
+    document.querySelectorAll('.stf-panel').forEach(p => {
         if (p !== panel) {
             p.style.display = 'none';
             const ch = document.getElementById(p.id.replace('_panel','_chevron'));
             if (ch) ch.style.transform = '';
+            if (p._scrollHandler) {
+                window.removeEventListener('scroll', p._scrollHandler);
+                window.removeEventListener('resize', p._scrollHandler);
+                p._scrollHandler = null;
+            }
         }
     });
-    panel.style.display = isOpen ? 'none' : 'block';
-    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+
+    if (isOpen) {
+        panel.style.display = 'none';
+        if (chevron) chevron.style.transform = '';
+        if (panel._scrollHandler) {
+            window.removeEventListener('scroll', panel._scrollHandler);
+            window.removeEventListener('resize', panel._scrollHandler);
+            panel._scrollHandler = null;
+        }
+        return;
+    }
+
+    // Pindahkan ke body supaya tidak terpotong overflow parent manapun
+    if (panel.parentElement !== document.body) {
+        document.body.appendChild(panel);
+    }
+
+    function reposition() {
+        const r = btn.getBoundingClientRect();
+        const w = Math.max(r.width, 280);
+        panel.style.width = w + 'px';
+        // Jaga agar tidak keluar kanan layar
+        const left = Math.min(r.left, window.innerWidth - w - 8);
+        panel.style.left  = left + 'px';
+        const ph = Math.min(260, panel.scrollHeight + 4);
+        if (r.bottom + ph + 8 > window.innerHeight && r.top > ph) {
+            panel.style.top = (r.top - ph - 4) + 'px';
+        } else {
+            panel.style.top = (r.bottom + 2) + 'px';
+        }
+    }
+
+    panel.style.display = 'block';
+    reposition();
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
+
+    panel._scrollHandler = reposition;
+    window.addEventListener('scroll', reposition, { passive: true });
+    window.addEventListener('resize', reposition, { passive: true });
 }
 
 // Toggle input manual saat "Lainnya" dipilih
@@ -511,12 +558,14 @@ function staffUpdatePreview(uid) {
     if (!panel || !preview) return;
 
     const names = [];
+    // Panel mungkin sudah di body — cari manual input via id langsung
+    const manualDiv = document.getElementById(uid + '_manual');
     panel.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(inp => {
         if (inp.value === 'other') {
-            const manualInp = document.querySelector('#' + uid + '_manual input');
+            const manualInp = manualDiv ? manualDiv.querySelector('input[type="text"]') : null;
             if (manualInp && manualInp.value.trim()) names.push(manualInp.value.trim() + ' (manual)');
         } else {
-            const lbl = panel.querySelector('label[for="' + inp.id + '"]');
+            const lbl = document.querySelector('label[for="' + inp.id + '"]');
             if (lbl) names.push(lbl.firstChild.textContent.trim());
         }
     });
@@ -534,11 +583,17 @@ function staffFilter(uid, query) {
 
 // Tutup panel saat klik di luar
 document.addEventListener('click', function(e) {
-    if (!e.target.closest('[id$="_panel"]') && !e.target.closest('button[onclick*="staffTogglePanel"]')) {
-        document.querySelectorAll('[id$="_panel"]').forEach(p => {
-            p.style.display = 'none';
-            const ch = document.getElementById(p.id.replace('_panel','_chevron'));
-            if (ch) ch.style.transform = '';
+    if (!e.target.closest('.stf-panel') && !e.target.closest('.stf-wrap')) {
+        document.querySelectorAll('.stf-panel').forEach(p => {
+            if (p.style.display !== 'none') {
+                p.style.display = 'none';
+                const ch = document.getElementById(p.id.replace('_panel','_chevron'));
+                if (ch) ch.style.transform = '';
+                if (p._scrollHandler) {
+                    window.removeEventListener('scroll', p._scrollHandler);
+                    p._scrollHandler = null;
+                }
+            }
         });
     }
 });

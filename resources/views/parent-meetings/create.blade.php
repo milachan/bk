@@ -9,7 +9,7 @@
 
 <div class="row justify-content-center">
 <div class="col-12 col-lg-9">
-<form action="{{ route('parent-meetings.store') }}" method="POST">
+<form action="{{ route('parent-meetings.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="form-card">
         <div class="row g-3">
@@ -65,10 +65,11 @@
             </div>
 
             <div class="col-12">
-                <label class="form-label fw-semibold">Kesepakatan</label>
-                <textarea name="agreement" class="form-control @error('agreement') is-invalid @enderror"
-                    rows="3" placeholder="Kesepakatan yang dicapai bersama orang tua...">{{ old('agreement') }}</textarea>
-                @error('agreement')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <label class="form-label fw-semibold">Unggah Dokumen / Foto Pendukung</label>
+                <input type="file" name="attachment" class="form-control @error('attachment') is-invalid @enderror"
+                    accept="image/*,.pdf,.doc,.docx"/>
+                <small class="text-muted">Format: JPG, PNG, PDF, DOC. Maks. 5MB</small>
+                @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-12">
@@ -80,7 +81,7 @@
 
             <div class="col-12">
                 @include('partials.staff-select', [
-                    'fieldName'    => 'handler_id[]',
+                    'fieldName'    => 'handler_id',
                     'manualField'  => 'handler_name',
                     'label'        => 'Ditangani Oleh',
                     'users'        => $handlers,

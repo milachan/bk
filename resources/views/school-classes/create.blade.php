@@ -24,9 +24,9 @@
                 <label class="form-label fw-semibold">Tingkat <span class="text-danger">*</span></label>
                 <select name="level" class="form-select @error('level') is-invalid @enderror" required>
                     <option value="">Pilih...</option>
-                    <option value="X" {{ old('level') == 'X' ? 'selected' : '' }}>X</option>
-                    <option value="XI" {{ old('level') == 'XI' ? 'selected' : '' }}>XI</option>
-                    <option value="XII" {{ old('level') == 'XII' ? 'selected' : '' }}>XII</option>
+                    <option value="VII"  {{ old('level') == 'VII'  ? 'selected' : '' }}>VII</option>
+                    <option value="VIII" {{ old('level') == 'VIII' ? 'selected' : '' }}>VIII</option>
+                    <option value="IX"   {{ old('level') == 'IX'   ? 'selected' : '' }}>IX</option>
                 </select>
                 @error('level')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>

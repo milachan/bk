@@ -179,18 +179,24 @@ class StudentController extends Controller
             'file.max'      => 'Ukuran file maksimal 5MB.',
         ]);
 
-        $import = new StudentsImport();
-        Excel::import($import, $request->file('file'));
+        try {
+            $import = new StudentsImport();
+            Excel::import($import, $request->file('file'));
 
-        ActivityLog::log('created', 'student', null, "Import {$import->imported} siswa dari Excel");
+            ActivityLog::log('created', 'student', null, "Import {$import->imported} siswa dari Excel");
 
-        $msg = "Import selesai: {$import->imported} siswa berhasil diimpor.";
-        if ($import->skipped > 0) {
-            $msg .= " {$import->skipped} baris dilewati.";
+            $msg = "Import selesai: {$import->imported} siswa berhasil diimpor.";
+            if ($import->skipped > 0) {
+                $msg .= " {$import->skipped} baris dilewati.";
+            }
+
+            return redirect()->route('students.index')
+                ->with('success', $msg)
+                ->with('import_errors', $import->errors);
+        } catch (\Exception $e) {
+            return redirect()->route('students.index')
+                ->with('error', 'Import gagal: ' . $e->getMessage());
         }
-
-        return redirect()->route('students.index')
-            ->with('success', $msg)
-            ->with('import_errors', $import->errors);
     }
 }
+

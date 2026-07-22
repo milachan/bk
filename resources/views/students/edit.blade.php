@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <label class="form-label fw-semibold">Kelas</label>
-                <select name="class_id" class="form-select">
+                <select name="class_id" class="form-select" size="6">
                     <option value="">Pilih Kelas...</option>
                     @foreach($classes as $c)
                     <option value="{{ $c->id }}" {{ old('class_id', $student->class_id) == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
@@ -153,3 +153,4 @@ function previewPhoto(input) {
 }
 </script>
 @endpush
+

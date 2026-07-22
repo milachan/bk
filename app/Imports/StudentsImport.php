@@ -10,14 +10,21 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class StudentsImport implements ToCollection, WithHeadingRow, SkipsOnError
+class StudentsImport implements ToCollection, WithHeadingRow, SkipsOnError, WithChunkReading
 {
     use SkipsErrors;
 
     public int $imported = 0;
     public int $skipped  = 0;
     public array $errors = [];
+
+    // Proses dalam chunk 100 baris untuk mencegah timeout
+    public function chunkSize(): int
+    {
+        return 100;
+    }
 
     public function collection(Collection $rows)
     {
@@ -102,3 +109,4 @@ class StudentsImport implements ToCollection, WithHeadingRow, SkipsOnError
         }
     }
 }
+

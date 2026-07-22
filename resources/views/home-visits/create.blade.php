@@ -9,7 +9,7 @@
 
 <div class="row justify-content-center">
 <div class="col-12 col-lg-9">
-<form action="{{ route('home-visits.store') }}" method="POST">
+<form action="{{ route('home-visits.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="form-card">
         <div class="row g-3">
@@ -72,8 +72,16 @@
             </div>
 
             <div class="col-12">
+                <label class="form-label fw-semibold">Unggah Foto / Dokumen Pendukung</label>
+                <input type="file" name="attachment" class="form-control @error('attachment') is-invalid @enderror"
+                    accept="image/*,.pdf,.doc,.docx">
+                <small class="text-muted">Format: JPG, PNG, PDF, DOC, DOCX. Maks: 5MB</small>
+                @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="col-12">
                 @include('partials.staff-select', [
-                    'fieldName'    => 'visitor_id[]',
+                    'fieldName'    => 'visitor_id',
                     'manualField'  => 'visitor_name',
                     'label'        => 'Petugas Kunjungan',
                     'users'        => $visitors,

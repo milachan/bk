@@ -26,7 +26,7 @@ class SchoolClassController extends Controller
     {
         $validated = $request->validate([
             'name'                => 'required|string|max:100',
-            'level'               => 'required|in:X,XI,XII',
+            'level'               => 'required|in:VII,VIII,IX',
             'homeroom_teacher_id' => 'nullable|exists:users,id',
             'school_year_id'      => 'nullable|exists:school_years,id',
         ]);

@@ -7,6 +7,7 @@ use App\Models\ParentMeeting;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ParentMeetingController extends Controller
 {
@@ -68,13 +69,17 @@ class ParentMeetingController extends Controller
             'reason'          => 'required|string',
             'parent_attended' => 'required|boolean',
             'meeting_result'  => 'nullable|string',
-            'agreement'       => 'nullable|string',
             'follow_up'       => 'nullable|string',
             'handler_id'      => 'nullable',
             'handler_name'    => 'nullable|string|max:255',
+            'attachment'      => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $validated = $this->resolveMultiStaff($request, $validated, 'handler_id', 'handler_name', 'extra_handlers');
+
+        if ($request->hasFile('attachment')) {
+            $validated['attachment'] = $request->file('attachment')->store('parent-meetings', 'public');
+        }
 
         $record = ParentMeeting::create($validated);
         ActivityLog::log('created', 'parent_meeting', $record->id, 'Input pemanggilan ortu: '.$record->student->name);
@@ -97,13 +102,18 @@ class ParentMeetingController extends Controller
             'reason'          => 'required|string',
             'parent_attended' => 'required|boolean',
             'meeting_result'  => 'nullable|string',
-            'agreement'       => 'nullable|string',
             'follow_up'       => 'nullable|string',
             'handler_id'      => 'nullable',
             'handler_name'    => 'nullable|string|max:255',
+            'attachment'      => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $validated = $this->resolveMultiStaff($request, $validated, 'handler_id', 'handler_name', 'extra_handlers');
+
+        if ($request->hasFile('attachment')) {
+            if ($parentMeeting->attachment) Storage::disk('public')->delete($parentMeeting->attachment);
+            $validated['attachment'] = $request->file('attachment')->store('parent-meetings', 'public');
+        }
 
         $parentMeeting->update($validated);
         ActivityLog::log('updated', 'parent_meeting', $parentMeeting->id, 'Update pemanggilan ortu: '.$parentMeeting->student->name);
@@ -113,6 +123,7 @@ class ParentMeetingController extends Controller
 
     public function destroy(ParentMeeting $parentMeeting)
     {
+        if ($parentMeeting->attachment) Storage::disk('public')->delete($parentMeeting->attachment);
         ActivityLog::log('deleted', 'parent_meeting', $parentMeeting->id, 'Hapus pemanggilan ortu: '.$parentMeeting->student->name);
         $parentMeeting->delete();
         return redirect()->route('parent-meetings.index')->with('success', 'Data berhasil dihapus.');

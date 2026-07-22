@@ -7,6 +7,7 @@ use App\Models\HomeVisit;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HomeVisitController extends Controller
 {
@@ -79,9 +80,14 @@ class HomeVisitController extends Controller
             'follow_up'    => 'nullable|string',
             'visitor_id'   => 'nullable',
             'visitor_name' => 'nullable|string|max:255',
+            'attachment'   => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $validated = $this->resolveMultiStaff($request, $validated, 'visitor_id', 'visitor_name', 'extra_visitors');
+
+        if ($request->hasFile('attachment')) {
+            $validated['attachment'] = $request->file('attachment')->store('home-visits', 'public');
+        }
 
         $record = HomeVisit::create($validated);
         ActivityLog::log('created', 'home_visit', $record->id, 'Input home visit: '.$record->student->name);
@@ -108,9 +114,15 @@ class HomeVisitController extends Controller
             'follow_up'    => 'nullable|string',
             'visitor_id'   => 'nullable',
             'visitor_name' => 'nullable|string|max:255',
+            'attachment'   => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $validated = $this->resolveMultiStaff($request, $validated, 'visitor_id', 'visitor_name', 'extra_visitors');
+
+        if ($request->hasFile('attachment')) {
+            if ($homeVisit->attachment) Storage::disk('public')->delete($homeVisit->attachment);
+            $validated['attachment'] = $request->file('attachment')->store('home-visits', 'public');
+        }
 
         $homeVisit->update($validated);
         ActivityLog::log('updated', 'home_visit', $homeVisit->id, 'Update home visit: '.$homeVisit->student->name);
@@ -120,6 +132,7 @@ class HomeVisitController extends Controller
 
     public function destroy(HomeVisit $homeVisit)
     {
+        if ($homeVisit->attachment) Storage::disk('public')->delete($homeVisit->attachment);
         ActivityLog::log('deleted', 'home_visit', $homeVisit->id, 'Hapus home visit: '.$homeVisit->student->name);
         $homeVisit->delete();
         return redirect()->route('home-visits.index')->with('success', 'Data berhasil dihapus.');

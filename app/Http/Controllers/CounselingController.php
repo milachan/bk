@@ -7,6 +7,7 @@ use App\Models\Counseling;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CounselingController extends Controller
 {
@@ -61,12 +62,16 @@ class CounselingController extends Controller
             'problem'       => 'required|string',
             'result'        => 'nullable|string',
             'solution'      => 'nullable|string',
-            'follow_up'     => 'nullable|string',
             'counselor_id'  => 'nullable',
             'counselor_name'=> 'nullable|string|max:255',
+            'attachment'    => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $validated = $this->resolveMultiStaff($request, $validated, 'counselor_id', 'counselor_name', 'extra_counselors');
+
+        if ($request->hasFile('attachment')) {
+            $validated['attachment'] = $request->file('attachment')->store('counselings', 'public');
+        }
 
         $record = Counseling::create($validated);
         ActivityLog::log('created', 'counseling', $record->id, 'Input konseling: '.$record->student->name);
@@ -89,12 +94,17 @@ class CounselingController extends Controller
             'problem'       => 'required|string',
             'result'        => 'nullable|string',
             'solution'      => 'nullable|string',
-            'follow_up'     => 'nullable|string',
             'counselor_id'  => 'nullable',
             'counselor_name'=> 'nullable|string|max:255',
+            'attachment'    => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
         $validated = $this->resolveMultiStaff($request, $validated, 'counselor_id', 'counselor_name', 'extra_counselors');
+
+        if ($request->hasFile('attachment')) {
+            if ($counseling->attachment) Storage::disk('public')->delete($counseling->attachment);
+            $validated['attachment'] = $request->file('attachment')->store('counselings', 'public');
+        }
 
         $counseling->update($validated);
         ActivityLog::log('updated', 'counseling', $counseling->id, 'Update konseling: '.$counseling->student->name);
@@ -104,6 +114,7 @@ class CounselingController extends Controller
 
     public function destroy(Counseling $counseling)
     {
+        if ($counseling->attachment) Storage::disk('public')->delete($counseling->attachment);
         ActivityLog::log('deleted', 'counseling', $counseling->id, 'Hapus konseling: '.$counseling->student->name);
         $counseling->delete();
         return redirect()->route('counselings.index')->with('success', 'Data berhasil dihapus.');
