@@ -90,12 +90,12 @@ class DatabaseSeeder extends Seeder
 
         // Classes
         $classes = [
-            ['name' => 'X IPA 1',   'level' => 'X',   'homeroom_teacher_id' => $wali1->id, 'school_year_id' => $sy->id],
-            ['name' => 'X IPA 2',   'level' => 'X',   'homeroom_teacher_id' => $wali2->id, 'school_year_id' => $sy->id],
-            ['name' => 'XI IPA 1',  'level' => 'XI',  'homeroom_teacher_id' => null,       'school_year_id' => $sy->id],
-            ['name' => 'XI IPS 1',  'level' => 'XI',  'homeroom_teacher_id' => null,       'school_year_id' => $sy->id],
-            ['name' => 'XII IPA 1', 'level' => 'XII', 'homeroom_teacher_id' => null,       'school_year_id' => $sy->id],
-            ['name' => 'XII IPS 1', 'level' => 'XII', 'homeroom_teacher_id' => null,       'school_year_id' => $sy->id],
+            ['name' => 'VII A',  'level' => 'VII',  'homeroom_teacher' => 'Ibu Dewi',               'school_year_id' => $sy->id],
+            ['name' => 'VII B',  'level' => 'VII',  'homeroom_teacher' => 'Pak Rudi',               'school_year_id' => $sy->id],
+            ['name' => 'VIII A', 'level' => 'VIII', 'homeroom_teacher' => null,                     'school_year_id' => $sy->id],
+            ['name' => 'VIII B', 'level' => 'VIII', 'homeroom_teacher' => null,                     'school_year_id' => $sy->id],
+            ['name' => 'IX A',   'level' => 'IX',   'homeroom_teacher' => null,                     'school_year_id' => $sy->id],
+            ['name' => 'IX B',   'level' => 'IX',   'homeroom_teacher' => null,                     'school_year_id' => $sy->id],
         ];
         foreach ($classes as $cls) {
             SchoolClass::firstOrCreate(['name' => $cls['name'], 'school_year_id' => $sy->id], $cls);

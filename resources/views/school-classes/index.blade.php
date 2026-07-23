@@ -34,7 +34,7 @@
                     <td class="ps-3 text-muted small">{{ $classes->firstItem() + $i }}</td>
                     <td class="fw-semibold small">{{ $c->name }}</td>
                     <td><span class="badge bg-primary">{{ $c->level }}</span></td>
-                    <td class="small">{{ $c->homeroomTeacher?->name ?? '-' }}</td>
+                    <td class="small">{{ $c->homeroom_teacher ?? '-' }}</td>
                     <td class="small">{{ $c->schoolYear?->name ?? '-' }}</td>
                     <td><span class="badge bg-light text-dark">{{ $c->students_count ?? $c->students?->count() ?? 0 }} siswa</span></td>
                     <td class="text-center">

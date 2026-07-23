@@ -33,15 +33,9 @@
 
             <div class="col-12">
                 <label class="form-label fw-semibold">Wali Kelas</label>
-                <select name="homeroom_teacher_id" class="form-select @error('homeroom_teacher_id') is-invalid @enderror">
-                    <option value="">Pilih Wali Kelas...</option>
-                    @foreach($teachers as $t)
-                    <option value="{{ $t->id }}" {{ old('homeroom_teacher_id', $schoolClass->homeroom_teacher_id) == $t->id ? 'selected' : '' }}>
-                        {{ $t->name }}
-                    </option>
-                    @endforeach
-                </select>
-                @error('homeroom_teacher_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <input type="text" name="homeroom_teacher" class="form-control @error('homeroom_teacher') is-invalid @enderror"
+                    value="{{ old('homeroom_teacher', $schoolClass->homeroom_teacher) }}" placeholder="Ketik nama wali kelas..."/>
+                @error('homeroom_teacher')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-12">

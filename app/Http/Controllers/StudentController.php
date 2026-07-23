@@ -83,8 +83,6 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        $student->load('class.homeroomTeacher');
-
         $stats = [
             'late_count'         => $student->lateRecords()->count(),
             'total_points'       => $student->violationRecords()->sum('points'),

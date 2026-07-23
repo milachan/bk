@@ -67,7 +67,7 @@
                         <span class="text-muted">-</span>
                     @endif
                 </td></tr>
-                <tr><td class="text-muted small">Wali Kelas</td><td class="small">{{ $student->class?->homeroomTeacher?->name ?? '-' }}</td></tr>
+                <tr><td class="text-muted small">Wali Kelas</td><td class="small">{{ $student->class?->homeroom_teacher ?? '-' }}</td></tr>
                 <tr><td class="text-muted small">JK</td><td class="small">{{ $student->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</td></tr>
                 <tr><td class="text-muted small">TTL</td><td class="small">{{ $student->birth_place ? $student->birth_place.', ' : '' }}{{ $student->birth_date?->translatedFormat('d M Y') ?? '-' }}</td></tr>
                 <tr><td class="text-muted small">Agama</td><td class="small">{{ $student->religion ?? '-' }}</td></tr>

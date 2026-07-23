@@ -22,8 +22,8 @@ class StudentTemplateExport implements FromArray, WithHeadings, WithStyles, With
     {
         // Contoh data dummy untuk panduan
         return [
-            ['2024001', '1234567801', 'Ahmad Fauzi',  'L', 'Jakarta', '2008-03-15', 'Islam', 'Jl. Merdeka No.1 Jakarta',    '08111111111', 'Bapak Fauzi',  '08122222222', 'X IPA 1', 'selatan'],
-            ['2024002', '1234567802', 'Siti Rahayu',  'P', 'Bandung',  '2008-07-22', 'Islam', 'Jl. Sudirman No.5 Bandung', '08211111111', 'Ibu Rahayu', '08222222222',   'X IPA 2', 'utara'],
+            ['2024001', '1234567801', 'Ahmad Fauzi',  'L', 'Jakarta', '2008-03-15', 'Islam', 'Jl. Merdeka No.1 Jakarta',    '08111111111', 'Bapak Fauzi',  '08122222222', 'VII A', 'selatan'],
+            ['2024002', '1234567802', 'Siti Rahayu',  'P', 'Bandung',  '2008-07-22', 'Islam', 'Jl. Sudirman No.5 Bandung', '08211111111', 'Ibu Rahayu', '08222222222',   'VIII B', 'utara'],
         ];
     }
 

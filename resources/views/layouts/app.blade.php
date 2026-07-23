@@ -24,7 +24,7 @@
         /* Sidebar */
         #sidebar {
             width: var(--sidebar-width);
-            min-height: 100vh;
+            height: 100vh;
             background: linear-gradient(180deg, #1e3a5f 0%, #0d2137 100%);
             position: fixed;
             top: 0; left: 0;

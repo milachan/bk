@@ -10,7 +10,7 @@ class SchoolClass extends Model
 {
     protected $table = 'classes';
 
-    protected $fillable = ['name', 'level', 'homeroom_teacher_id', 'school_year_id'];
+    protected $fillable = ['name', 'level', 'homeroom_teacher_id', 'homeroom_teacher', 'school_year_id'];
 
     public function homeroomTeacher(): BelongsTo
     {

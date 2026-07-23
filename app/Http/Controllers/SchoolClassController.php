@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\SchoolClass;
 use App\Models\SchoolYear;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class SchoolClassController extends Controller
@@ -17,9 +16,8 @@ class SchoolClassController extends Controller
 
     public function create()
     {
-        $teachers    = User::orderBy('name')->get();
         $schoolYears = SchoolYear::orderByDesc('is_active')->orderByDesc('name')->get();
-        return view('school-classes.create', compact('teachers', 'schoolYears'));
+        return view('school-classes.create', compact('schoolYears'));
     }
 
     public function store(Request $request)
@@ -27,7 +25,7 @@ class SchoolClassController extends Controller
         $validated = $request->validate([
             'name'                => 'required|string|max:100',
             'level'               => 'required|in:VII,VIII,IX',
-            'homeroom_teacher_id' => 'nullable|exists:users,id',
+            'homeroom_teacher'   => 'nullable|string|max:255',
             'school_year_id'      => 'nullable|exists:school_years,id',
         ]);
 
@@ -37,17 +35,16 @@ class SchoolClassController extends Controller
 
     public function edit(SchoolClass $schoolClass)
     {
-        $teachers    = User::orderBy('name')->get();
         $schoolYears = SchoolYear::orderByDesc('is_active')->orderByDesc('name')->get();
-        return view('school-classes.edit', compact('schoolClass', 'teachers', 'schoolYears'));
+        return view('school-classes.edit', compact('schoolClass', 'schoolYears'));
     }
 
     public function update(Request $request, SchoolClass $schoolClass)
     {
         $validated = $request->validate([
             'name'                => 'required|string|max:100',
-            'level'               => 'required|in:X,XI,XII',
-            'homeroom_teacher_id' => 'nullable|exists:users,id',
+            'level'               => 'required|in:VII,VIII,IX',
+            'homeroom_teacher'   => 'nullable|string|max:255',
             'school_year_id'      => 'nullable|exists:school_years,id',
         ]);
 
